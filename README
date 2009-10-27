@@ -1,0 +1,2 @@
+Add the mni directory to your PYTHONPATH variable, and the scripts directory
+to your PATH, in order to use MNI.
