@@ -75,7 +75,6 @@ class TelosMote(Node):
 
         template = Template(installCmd)
         self.installCmd = template.substitute(serial = self.serial, id=self.id)
-        print self.installCmd
 
     def install(self):
 
