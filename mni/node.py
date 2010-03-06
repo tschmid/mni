@@ -45,6 +45,65 @@ class Node:
         return ["id"]
     get_required_attributes = staticmethod(get_required_attributes)
 
+from string import Template
+
+class TelosMote(Node):
+
+    def __init__(self):
+        Node.__init__(self)
+
+    def configure(self, configuration):
+        Node.configure(self, configuration)
+
+        for a in TelosMote.get_required_attributes():
+            if a not in configuration.keys():
+                raise KeyError, "Configuration must include key '%s'"%(a,)
+        serialid = configuration["serialid"]
+        installCmd = configuration["installCmd"]
+
+        proc = subprocess.Popen("motelist | grep %s"%(serialid,), shell=True,
+                stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        proc.wait()
+
+        s = proc.stdout.readlines()
+        if len(s) != 1:
+            raise KeyError, "SerialID %s not found!"%serialid
+
+        self.serial = s[0].split()[1]
+        if not os.path.exists(self.serial):
+            raise ValueError, "ERROR: Serial port %s does not exist\n"%(self.serial,)
+
+        template = Template(installCmd)
+        self.installCmd = template.substitute(serial = self.serial, id=self.id)
+        print self.installCmd
+
+    def install(self):
+
+        proc = subprocess.Popen(self.installCmd, shell=True, stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE)
+        proc.wait()
+
+        if proc.returncode != None:
+            if proc.returncode == 0:
+                self.installSuccess = True
+            else:
+                # compilation failed
+                sys.stderr.write(
+"""ERROR: Compilation Failed. Output from command "%s":\n"""%(self.installCmd,))
+                sys.stderr.write("".join(proc.stdout.readlines()))
+                sys.stderr.write("\n")
+                sys.stderr.write("".join(proc.stderr.readlines()))
+                self.installSuccess = False
+        else:
+            # something went wrong!
+            self.installSuccess =  False
+
+    def is_install_success(self):
+        return self.installSuccess
+
+    def get_required_attributes():
+        return Node.get_required_attributes() + ["serialid", "installCmd"]
+    get_required_attributes = staticmethod(get_required_attributes)
 
 class QuantoTestbedMote(Node):
 
