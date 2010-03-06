@@ -1,2 +1,14 @@
-Add the mni directory to your PYTHONPATH variable, and the scripts directory
-to your PATH, in order to use MNI.
+To install MNI on your system, execute:
+
+sudo python setup.py install
+
+In order to get the scripts working you either have to copy them into your
+execution path or modify your PATH variable to point to the script
+directory.
+
+An example configuration file is in scripts/config.ini. This example shows
+how to configure 3 TelosB motes using their serial identifiers. You can get
+the identifier by executing 'motelist' on your computer. The advantage of
+serial identifiers instead of the serial port is that there are no
+confusions in case you unplug a mote and it gets a new serial port assigned.
+
