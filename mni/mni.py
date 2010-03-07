@@ -72,6 +72,21 @@ class MNI:
             self.nodes.append(nodeType())
             self.nodes[-1].configure(configuration)
 
+    def reset_all(self):
+        processes = []
+        for n in self.nodes:
+            p = threading.Thread(target=n.reset)
+            p.start()
+            processes.append(p)
+
+        while len(processes) > 0:
+            runningProcesses = []
+            for p in processes:
+                if p.isAlive():
+                    runningProcesses.append(p)
+
+            processes = runningProcesses
+            time.sleep(0.1)
 
     def _verify_required_options(self, section, options):
         """Verify that all options are included in section of self.config."""

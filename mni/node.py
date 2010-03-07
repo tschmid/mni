@@ -97,6 +97,12 @@ class TelosMote(Node):
             # something went wrong!
             self.installSuccess =  False
 
+    def reset(self):
+        """ Reset the specified telos mote using tos-bsl. """
+        proc = subprocess.Popen("tos-bsl --telosb -c %s -r"%(self.serial), shell=True,
+                stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        proc.wait()
+
     def is_install_success(self):
         return self.installSuccess
 

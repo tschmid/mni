@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import sys
-from mni import mni
+import mni
 import time
 import optparse
 import time
@@ -18,19 +18,20 @@ will the the maximum wait time between consecutive starts.")
 
 (options, args) = parser.parse_args()
 
-m = mni.MNI()
+m = mni.QuantoMNI()
 
 print "Resetting nodes"
 
 if options.random != None and options.random > 0:
     #randomize the startup of the nodes
+    m.stop_all()
     for n in m.get_nodes():
         time.sleep(random.random()*options.random)
-        print "Starting Node", n.serial, n.id
-        n.reset()
+        print "Starting Node", n.ip, n.id
+        n.start()
 else:
     # simply reset all nodes
     for n in m.get_nodes():
-        print "Node", n.id
+        print "Node", n.ip
     m.reset_all()
 
