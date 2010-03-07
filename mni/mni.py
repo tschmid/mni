@@ -168,8 +168,8 @@ class MNI:
         for n in self.nodes:
             p = msp.ManagedSubproc(
                     "/usr/bin/java net.tinyos.tools.Listen -comm serial@%s:tmote"%(n.serial),
-                    stdout_disk = baseFileName + ".%s.log"%(n.ip,),
-                    stderr_disk = baseFileName + ".%s.stderr.log"%(n.ip,),
+                    stdout_disk = baseFileName + ".%d.log"%(n.id,),
+                    stderr_disk = baseFileName + ".%d.stderr.log"%(n.id,),
                     stdout_fns = [n.message_counter, ])
             p.start()
             self.serialProcesses.append(p)
