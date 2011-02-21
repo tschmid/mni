@@ -146,7 +146,8 @@ class QuantoTestbedMote(Node):
         if not os.path.exists(self.serial):
             raise ValueError, "ERROR: Serial port %s does not exist\n"%(self.serial,)
 
-        self.installCmd = installCmd
+        template = Template(installCmd)
+        self.installCmd = template.substitute(serial = self.serial, id=self.id)
 
         # add the RCI interface
         self.rci = rci.RCI(self.ip)
