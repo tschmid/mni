@@ -12,4 +12,7 @@ for n in m.get_nodes():
 sys.stdout.write("\n")
 sys.stdout.flush()
 
-m.install_all()
+if m.install_all():
+    print "Install Success"
+else:
+    print "Install Failed!"

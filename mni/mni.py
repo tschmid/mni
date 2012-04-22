@@ -129,23 +129,63 @@ class MNI:
             p.start()
             processes.append(p)
 
+        totalProcesses = len(processes)
+
+        runningProcesses = []
         while len(processes) > 0:
             runningProcesses = []
             for p in processes:
                 if p.isAlive():
                     runningProcesses.append(p)
 
+            if len(runningProcesses) < 0.1*totalProcesses:
+                # we have less than 10% of processes left.
+                # give them 10 seconds to finish, or else kill them.
+                print "10% left. 10 second timout started"
+                i = 10
+                while i >= 0:
+                    sys.stdout.write("%d "%i)
+                    sys.stdout.flush()
+                    time.sleep(1)
+                    i -= 1
+                print
+                break
+
             processes = runningProcesses
             time.sleep(0.1)
 
+        # check if all processes are done
+        for p in processes:
+            if p.isAlive():
+                print p, "still alive. trying to stop"
+                p._Thread__stop()
+
+
         # processes done. Collect exit codes
         installSuccess = True
+        badInstalls = []
         for n in self.nodes:
             if not n.is_install_success():
                 installSuccess = False
+                badInstalls.append(n)
 
         if not installSuccess:
-            raise InstallError, "Installation Failed on at least 1 node!"
+            # try one more time, installing missed motes
+            print "Some installations failed. Trying to install again"
+            moreBadInstalls = []
+            for n in badInstalls:
+                print "Re-installing on", n.id
+                n.install()
+                if not n.is_install_success():
+                    moreBadInstalls.append(n)
+
+            if len(moreBadInstalls) > 0:
+                print "Failed to install on:"
+                for n in moreBadInstalls:
+                    print "Node ID: ", n.id
+                raise InstallError, "Installation Failed on at least 1 node!"
+            installSuccess = True
+
         return installSuccess
 
     def connect_serial_to_file_all(self, baseFileName, timeout=None,

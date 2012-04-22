@@ -78,6 +78,7 @@ class TelosMote(Node):
 
     def install(self):
 
+        self.installSuccess = False
         proc = subprocess.Popen(self.installCmd, shell=True, stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE)
         proc.wait()
