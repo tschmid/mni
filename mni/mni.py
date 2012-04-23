@@ -69,8 +69,16 @@ class MNI:
             for a in attributes:
                 configuration[a] = self.config.get(nodeString, a)
 
-            self.nodes.append(nodeType())
-            self.nodes[-1].configure(configuration)
+            n = nodeType()
+            configured = False
+            try:
+                n.configure(configuration)
+                configured = True
+            except KeyError:
+                # Node does not exist, print an error
+                print "Node:", nodeString," is not connected. Ignoring"
+            if configured:
+                self.nodes.append(n)
 
     def reset_all(self):
         processes = []
