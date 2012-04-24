@@ -10,6 +10,7 @@ sys.stdout.write("Installing application on nodes: ")
 for n in m.get_nodes():
     sys.stdout.write("%d,%s "%(n.id, n.serial))
 sys.stdout.write("\n")
+print "Installing on %d nodes"%(len(m.get_nodes()))
 sys.stdout.flush()
 
 if m.install_all():
