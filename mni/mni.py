@@ -12,7 +12,7 @@ import managedsubproc as msp
 class MNI:
 
 
-    def __init__(self, configFile="config.ini"):
+    def __init__(self, configFile="config.ini", addIgnore=False):
         """Initialize a managed node infrastructure.
 
         Initialization reads a configuration file to set testbed wide
@@ -74,9 +74,13 @@ class MNI:
             try:
                 n.configure(configuration)
                 configured = True
-            except KeyError:
-                # Node does not exist, print an error
-                print "Node:", nodeString," is not connected. Ignoring"
+            except KeyError, e:
+                if addIgnore:
+                    print "Node:", nodeString," is not connected. Adding anyway"
+                    self.nodes.append(n)
+                else:
+                    # Node does not exist, print an error
+                    print "Node:", nodeString," is not connected. Ignoring"
             if configured:
                 self.nodes.append(n)
 

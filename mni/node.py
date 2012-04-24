@@ -59,6 +59,7 @@ class TelosMote(Node):
             if a not in configuration.keys():
                 raise KeyError, "Configuration must include key '%s'"%(a,)
         serialid = configuration["serialid"]
+        self.serialid = serialid
         installCmd = configuration["installCmd"]
 
         proc = subprocess.Popen("motelist | grep %s"%(serialid,), shell=True,
